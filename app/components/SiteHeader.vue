@@ -10,7 +10,7 @@ const currentYear = new Date().getFullYear()
 </script>
 
 <template>
-<PageGrid class="h-20 items-center font-sans text-sm uppercase">
+<PageGrid class=" h-14 sticky top-0 bg-white z-50 items-center font-sans text-sm uppercase">
         <NuxtLink to="/" class="col-span-3">
       LORENZO SILVESTRI
     </NuxtLink>
