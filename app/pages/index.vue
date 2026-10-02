@@ -59,13 +59,13 @@ const settings = computed(() => settingsResult.value?.items?.[0])
                 </div>
             </div>
 
-            <<ul class="col-span-8 col-start-3 grid grid-cols-12 gap-2.5 list-none p-0 mt-10">
+            <ul class="col-span-10 col-start-2 grid grid-cols-12 gap-2.5 list-none p-0 mt-10">
               <li
                 v-for="project in projects?.items"
                 :key="project.sys.id"
                 class="col-span-6"
               >
-                <ProjectCard :project="project" />
+               <ProjectCard :project="project" :columns="6" />
               </li>
             </ul>
         </PageGrid>
