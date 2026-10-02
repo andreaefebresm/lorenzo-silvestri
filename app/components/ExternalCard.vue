@@ -6,22 +6,18 @@ const props = defineProps<{
 
 const colClass = computed(() => {
   const map: Record<number, string> = {
-    3: 'col-span-3',
-    4: 'col-span-4',
-    6: 'col-span-6',
+    3: 'col-span-12 md:col-span-3',
+    4: 'col-span-12 md:col-span-4',
+    6: 'col-span-12 md:col-span-6',
     12: 'col-span-12',
   }
-  return map[props.columns ?? 3] ?? 'col-span-3'
+  return map[props.columns ?? 3] ?? 'col-span-12 md:col-span-3'
 })
 </script>
 
 <template>
   <div :class="colClass">
-    <a
-      :href="entry.fields.externalUrl"
-      target="_blank"
-      rel="noopener"
-    >
+    <a :href="entry.fields.externalUrl" target="_blank" rel="noopener">
       <NuxtImg
         v-if="entry.fields.externalImage"
         :src="`https:${(entry.fields.externalImage as any)?.fields?.file?.url}`"

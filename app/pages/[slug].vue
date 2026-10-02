@@ -27,23 +27,23 @@ const kind = computed(() => project.value?.fields.projectKind || 'standard')
 <template>
   <main v-if="project">
     <PageGrid>
-      <!-- SLOT 1: cover + titolo + cartiglio, in un solo viewport -->
-      <div class="col-span-8 flex flex-col" style="height: calc(100vh - 80px)">
+      <!-- SLOT 1: cover + titolo + cartiglio -->
+      <div class="col-span-12 md:col-span-8 flex flex-col md:h-[calc(100vh-56px)]">
         <NuxtImg
-          v-if="project.fields.coverImage"
-          :src="`https:${(project.fields.coverImage as any)?.fields?.file?.url}`"
+          v-if="project.fields.heroImage ?? project.fields.coverImage"
+          :src="`https:${((project.fields.heroImage ?? project.fields.coverImage) as any)?.fields?.file?.url}`"
           :alt="project.fields.title as string"
           provider="contentful"
           width="1400"
-          class="flex-1 min-h-0 w-full object-cover"
+          class="flex-1 md:min-h-0 w-full object-cover aspect-[4/5] md:aspect-auto"
         />
-        <h1 class="text-4xl font-semibold mt-5">{{ project.fields.title }}</h1>
-        <p v-if="project.fields.tagline" class="text-[#BEBEBE] text-2xl font-semibold mt-2">
+        <h1 class="text-2xl md:text-4xl font-semibold mt-5">{{ project.fields.title }}</h1>
+        <p v-if="project.fields.tagline" class="text-[#BEBEBE] text-lg md:text-2xl font-semibold mt-2">
           {{ project.fields.tagline }}
         </p>
       </div>
 
-      <aside class="col-start-9 col-span-4 pl-5" style="height: calc(100vh - 80px)">
+      <aside class="col-span-12 md:col-start-9 md:col-span-4 md:pl-5 mt-5 md:mt-0 md:h-[calc(100vh-56px)]">
         <div v-if="project.fields.scope" class="mb-8">
           <h3 class="uppercase font-medium text-xl text-[#BEBEBE]">Scope</h3>
           <p class="text-sm font-light">{{ project.fields.scope }}</p>
@@ -70,7 +70,7 @@ const kind = computed(() => project.value?.fields.projectKind || 'standard')
       <template v-if="kind === 'standard'">
         <section
           v-if="project.fields.bodyText"
-          class="col-start-4 col-span-6 mt-16 text-center text-3xl"
+          class="col-span-12 md:col-start-4 md:col-span-6 mt-16 text-xl md:text-3xl text-center"
         >
           <ContentfulRichText :document="project.fields.bodyText as any" />
         </section>
@@ -86,7 +86,7 @@ const kind = computed(() => project.value?.fields.projectKind || 'standard')
 
           <!-- fallback per progetti non ancora migrati a contentBlocks -->
           <div v-else class="grid grid-cols-12 gap-2.5">
-            <div class="col-span-8">
+            <div class="col-span-12 md:col-span-8">
               <NuxtImg
                 v-for="(img, i) in (project.fields.gallery as any[])"
                 :key="i"
@@ -98,8 +98,8 @@ const kind = computed(() => project.value?.fields.projectKind || 'standard')
                 loading="lazy"
               />
             </div>
-            <aside class="col-span-4 pl-5">
-              <div class="sticky top-20">
+            <aside class="col-span-12 md:col-span-4 md:pl-5 mt-5 md:mt-0">
+              <div class="md:sticky md:top-20">
                 <div v-if="project.fields.role" class="mb-8">
                   <h3 class="uppercase font-medium text-[#BEBEBE]">About the project</h3>
                   <ContentfulRichText :document="project.fields.role as any" />
@@ -111,7 +111,7 @@ const kind = computed(() => project.value?.fields.projectKind || 'standard')
 
         <section
           v-if="project.fields.deepDive"
-          class="col-span-8 mt-16"
+          class="col-span-12 md:col-span-8 mt-16"
         >
           <ContentfulRichText :document="project.fields.deepDive as any" />
         </section>
@@ -121,7 +121,7 @@ const kind = computed(() => project.value?.fields.projectKind || 'standard')
       <template v-else-if="kind === 'collector'">
         <section
           v-if="project.fields.bodyText"
-          class="col-start-4 col-span-6 mt-16 text-center text-xl"
+          class="col-span-12 md:col-start-4 md:col-span-6 mt-16 text-lg md:text-xl text-center"
         >
           <ContentfulRichText :document="project.fields.bodyText as any" />
         </section>
@@ -136,7 +136,7 @@ const kind = computed(() => project.value?.fields.projectKind || 'standard')
       <template v-else-if="kind === 'gallery'">
         <section
           v-if="project.fields.bodyText"
-          class="col-start-4 col-span-6 mt-16 text-center text-xl"
+          class="col-span-12 md:col-start-4 md:col-span-6 mt-16 text-lg md:text-xl text-center"
         >
           <ContentfulRichText :document="project.fields.bodyText as any" />
         </section>
@@ -147,7 +147,7 @@ const kind = computed(() => project.value?.fields.projectKind || 'standard')
         />
       </template>
 
-      <!-- SLOT 7: altri progetti, comune -->
+      <!-- SLOT 7: altri progetti -->
       <section
         v-if="(project.fields.relatedProjects as any[])?.length"
         class="col-span-12 mt-16 border-t border-black pt-5"
@@ -156,7 +156,7 @@ const kind = computed(() => project.value?.fields.projectKind || 'standard')
           v-for="rel in (project.fields.relatedProjects as any[])"
           :key="rel.sys.id"
           :to="`/${rel.fields.slug}`"
-          class="mr-5"
+          class="mr-5 block md:inline"
         >
           {{ rel.fields.title }}
         </NuxtLink>

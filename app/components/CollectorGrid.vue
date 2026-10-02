@@ -11,13 +11,13 @@ defineProps<{
         v-for="entry in entries.filter((e) => e.fields.project)"
         :key="entry.sys.id"
         :project="entry.fields.project"
-        :columns="3"
+        :columns="4"
       />
       <ExternalCard
         v-for="entry in entries.filter((e) => !e.fields.project)"
         :key="entry.sys.id"
         :entry="entry"
-        :columns="3"
+        :columns="4"
       />
     </div>
   </section>

@@ -6,12 +6,12 @@ const props = defineProps<{
 
 const colClass = computed(() => {
   const map: Record<number, string> = {
-    3: 'col-span-3',
-    4: 'col-span-4',
-    6: 'col-span-6',
+    3: 'col-span-12 md:col-span-3',
+    4: 'col-span-12 md:col-span-4',
+    6: 'col-span-12 md:col-span-6',
     12: 'col-span-12',
   }
-  return map[props.columns ?? 6] ?? 'col-span-6'
+  return map[props.columns ?? 6] ?? 'col-span-12 md:col-span-6'
 })
 </script>
 
@@ -24,7 +24,7 @@ const colClass = computed(() => {
         :alt="project.fields.title as string"
         provider="contentful"
         width="800"
-        class="aspect-square object-cover w-full"
+        class="aspect-[3/4] object-cover w-full"
         loading="lazy"
       />
       <h2 class="uppercase font-medium text-[20px] text-black mt-2.5">
