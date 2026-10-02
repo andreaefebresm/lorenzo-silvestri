@@ -6,7 +6,7 @@ defineProps<{
 
 <template>
   <div class="grid grid-cols-12 gap-2.5 mb-16">
-    <div class="col-span-8">
+    <div class="col-span-12 md:col-span-8">
       <NuxtImg
         v-for="(img, i) in (block.fields.images as any[]) ?? []"
         :key="i"
@@ -19,8 +19,11 @@ defineProps<{
       />
     </div>
 
-    <aside class="col-span-4 pl-5">
-      <div class="sticky top-20">
+    <aside class="col-span-12 md:col-span-4 md:pl-5 mt-5 md:mt-0">
+      <div class="md:sticky md:top-20">
+        <h5 v-if="block.fields.title" class="uppercase font-medium text-[#BEBEBE] mb-2">
+          {{ block.fields.title }}
+        </h5>
         <ContentfulRichText v-if="block.fields.text" :document="block.fields.text as any" />
       </div>
     </aside>

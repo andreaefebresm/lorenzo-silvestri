@@ -48,8 +48,8 @@ const currentYear = new Date().getFullYear()
         </p>
       </div>
 
-      <div class="col-span-12 mt-16">
-        <p class="font-light text-sm">Site by Andrea Elena Febres Medina</p>
+      <div class="col-span-12 mt-16 text-right">
+        <p class="font-light text-xs">Site by Andrea Elena Febres Medina</p>
       </div>
     </PageGrid>
   </footer>

@@ -25,7 +25,7 @@ const kind = computed(() => project.value?.fields.projectKind || 'standard')
 </script>
 
 <template>
-  <main v-if="project">
+  <main v-if="project" class="mb-16">
     <PageGrid>
       <!-- SLOT 1: cover + titolo + cartiglio -->
       <div class="col-span-12 md:col-span-8 flex flex-col md:h-[calc(100vh-56px)]">
@@ -61,8 +61,8 @@ const kind = computed(() => project.value?.fields.projectKind || 'standard')
           <p class="text-sm font-light">{{ project.fields.year }}</p>
         </div>
         <div v-if="project.fields.featured" class="mb-8">
-          <h3 class="uppercase font-medium text-xl text-[#BEBEBE]">Featured</h3>
-          <ContentfulRichText :document="project.fields.featured as any" />
+          <h3 class="uppercase font-light text-xl text-[#BEBEBE]">Featured</h3>
+          <ContentfulRichText :document="project.fields.featured as any" size="sm" />
         </div>
       </aside>
 
@@ -70,7 +70,7 @@ const kind = computed(() => project.value?.fields.projectKind || 'standard')
       <template v-if="kind === 'standard'">
         <section
           v-if="project.fields.bodyText"
-          class="col-span-12 md:col-start-4 md:col-span-6 mt-16 text-xl md:text-3xl text-center"
+          class="col-span-12 md:col-start-3 md:col-span-8 mt-16 text-xl md:text-2xl text-center"
         >
           <ContentfulRichText :document="project.fields.bodyText as any" />
         </section>

@@ -33,7 +33,7 @@ function onTouchEnd(e: TouchEvent) {
 <template>
   <div>
     <div
-      class="aspect-[3/4] overflow-hidden"
+      class="aspect-square overflow-hidden"
       @touchstart="onTouchStart"
       @touchend="onTouchEnd"
     >
