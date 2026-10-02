@@ -24,7 +24,7 @@ const colClass = computed(() => {
         :alt="project.fields.title as string"
         provider="contentful"
         width="800"
-        class="aspect-[3/4] object-cover w-full"
+        class="aspect-square object-cover w-full"
         loading="lazy"
       />
       <h2 class="uppercase font-medium text-[20px] text-black mt-2.5">
