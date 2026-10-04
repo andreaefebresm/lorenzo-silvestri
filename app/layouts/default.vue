@@ -13,11 +13,13 @@ const { data: settingsResult } = await useAsyncData(
 )
 
 const settings = computed(() => settingsResult.value?.items?.[0])
+
+const { data: projects } = await useProjectsList()
 </script>
 
 <template>
   <div class="site">
-    <SiteHeader :settings="settings" />
+    <SiteHeader :settings="settings" :projects="projects?.items" />
     <slot />
     <SiteFooter :settings="settings" />
   </div>

@@ -38,7 +38,7 @@ const kind = computed(() => project.value?.fields.projectKind || 'standard')
           class="flex-1 md:min-h-0 w-full object-cover aspect-[4/5] md:aspect-auto"
         />
         <h1 class="text-2xl md:text-4xl font-semibold mt-5">{{ project.fields.title }}</h1>
-        <p v-if="project.fields.tagline" class="text-[#BEBEBE] text-lg md:text-2xl font-semibold mt-2">
+        <p v-if="project.fields.tagline" class="text-[#BEBEBE] text-lg md:text-2xl font-semibold">
           {{ project.fields.tagline }}
         </p>
       </div>
@@ -61,7 +61,7 @@ const kind = computed(() => project.value?.fields.projectKind || 'standard')
           <p class="text-sm font-light">{{ project.fields.year }}</p>
         </div>
         <div v-if="project.fields.featured" class="mb-8">
-          <h3 class="uppercase font-light text-xl text-[#BEBEBE]">Featured</h3>
+          <h3 class="uppercase font-medium text-xl text-[#BEBEBE]">Featured</h3>
           <ContentfulRichText :document="project.fields.featured as any" size="sm" />
         </div>
       </aside>
@@ -121,7 +121,7 @@ const kind = computed(() => project.value?.fields.projectKind || 'standard')
       <template v-else-if="kind === 'collector'">
         <section
           v-if="project.fields.bodyText"
-          class="col-span-12 md:col-start-4 md:col-span-6 mt-16 text-lg md:text-xl text-center"
+          class="col-span-12 md:col-start-4 md:col-span-6 mt-16 text-lg md:text-2xl text-center"
         >
           <ContentfulRichText :document="project.fields.bodyText as any" />
         </section>
@@ -136,7 +136,7 @@ const kind = computed(() => project.value?.fields.projectKind || 'standard')
       <template v-else-if="kind === 'gallery'">
         <section
           v-if="project.fields.bodyText"
-          class="col-span-12 md:col-start-4 md:col-span-6 mt-16 text-lg md:text-xl text-center"
+          class="col-span-12 md:col-start-4 md:col-span-6 mt-16 text-lg md:text-2xl text-center"
         >
           <ContentfulRichText :document="project.fields.bodyText as any" />
         </section>

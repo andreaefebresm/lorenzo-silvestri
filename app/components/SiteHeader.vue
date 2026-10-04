@@ -1,71 +1,84 @@
 <script setup lang="ts">
-const { locale } = useI18n()
-const switchLocalePath = useSwitchLocalePath()
-
 defineProps<{
   settings?: any
+  projects?: any[]
 }>()
-
-const otherLocale = computed(() => {
-  return locale.value === 'en' ? 'it' : 'en'
-})
 
 const currentYear = new Date().getFullYear()
 const menuOpen = ref(false)
+
+const route = useRoute()
+watch(() => route.fullPath, () => {
+  menuOpen.value = false
+})
 </script>
 
 <template>
-  <PageGrid class="h-14 sticky top-0 bg-white z-50 items-center font-sans text-sm uppercase relative">
-    <button
-      class="col-span-1 md:hidden"
-      aria-label="Menu"
-      @click="menuOpen = !menuOpen"
-    >
-      ☰
-    </button>
+  <header class="sticky top-0 z-50 bg-white font-sans text-sm uppercase">
+    <!-- MOBILE -->
+    <div class="md:hidden h-14 px-5 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <button
+          :aria-expanded="menuOpen"
+          aria-label="Menu"
+          @click="menuOpen = !menuOpen"
+        >
+          {{ menuOpen ? '✕' : '☰' }}
+        </button>
+        <NuxtLink to="/" class="flex items-center gap-2.5">
+          <img src="/logo.svg" alt="" class="h-[1em] w-auto" />
+          LORENZO SILVESTRI
+        </NuxtLink>
+      </div>
 
-    <NuxtLink to="/" class="col-span-6 md:col-span-3">
-      LORENZO SILVESTRI
-    </NuxtLink>
+      <LocaleSwitch />
+    </div>
 
-    <span class="hidden md:block md:col-span-1">{{ currentYear }}</span>
-
-    <a
-      v-if="settings?.fields.cvFile"
-      :href="(settings.fields.cvFile as any)?.fields?.file?.url"
-      target="_blank"
-      rel="noopener"
-      class="hidden md:block md:col-start-10 md:col-span-2 text-left"
-    >
-      Download CV
-    </a>
-
-    <NuxtLink
-      :to="switchLocalePath(otherLocale)"
-      class="col-start-11 col-span-2 md:col-start-12 md:col-span-1 text-center bg-black text-white px-2.5 py-1 rounded-full inline-block"
-    >
-      <span :class="locale === 'en' ? 'opacity-100' : 'opacity-50'">
-        {{ locale === 'en' ? 'ENG' : 'ITA' }}
-      </span>
-      |
-      <span :class="otherLocale === 'en' ? 'opacity-100' : 'opacity-50'">
-        {{ otherLocale === 'en' ? 'ENG' : 'ITA' }}
-      </span>
-    </NuxtLink>
-
-    <div
+    <nav
       v-if="menuOpen"
-      class="md:hidden absolute top-full left-0 w-full bg-white border-b border-black p-5"
+      class="md:hidden absolute top-full left-0 w-full bg-white border-b border-black px-5 py-5 max-h-[calc(100vh-56px)] overflow-y-auto"
     >
+      <ol class="font-light">
+        <li v-for="(project, index) in projects" :key="project.sys.id">
+          <NuxtLink :to="`/${project.fields.slug}`">
+            {{ index + 1 }}. {{ project.fields.title }}
+          </NuxtLink>
+        </li>
+      </ol>
+
+      <a
+        v-if="settings?.fields.cvFile"
+        :href="(settings.fields.cvFile as any)?.fields?.file?.url"
+        target="_blank"
+        rel="noopener"
+        class="block mt-5"
+      >
+        Download CV
+      </a>
+    </nav>
+
+    <!-- DESKTOP -->
+    <div class="hidden md:block">
+      <PageGrid class="h-14 items-center">
+        <NuxtLink to="/" class="col-span-3 flex items-center gap-2.5">
+          <img src="/logo.svg" alt="" class="h-[1em] w-auto" />
+          LORENZO SILVESTRI
+        </NuxtLink>
+
+        <span class="col-span-1">{{ currentYear }}</span>
+
         <a
           v-if="settings?.fields.cvFile"
           :href="(settings.fields.cvFile as any)?.fields?.file?.url"
           target="_blank"
           rel="noopener"
-          class="block uppercase"
+          class="col-start-10 col-span-2 text-left"
         >
           Download CV
         </a>
+
+        <LocaleSwitch class="col-start-12 col-span-1" />
+      </PageGrid>
     </div>
-  </PageGrid>
+  </header>
 </template>

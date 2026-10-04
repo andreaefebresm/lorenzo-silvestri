@@ -23,28 +23,24 @@ const currentYear = new Date().getFullYear()
 
       <div class="col-span-12 md:col-span-3 mb-8 md:mb-0">
         <h3 class="uppercase font-medium">Contacts</h3>
-        <a
-          v-if="settings?.fields.contactEmail"
-          :href="`mailto:${settings.fields.contactEmail}`"
-          class="font-light block"
-        >
+        <a v-if="settings?.fields.contactEmail" :href="`mailto:${settings.fields.contactEmail}`"
+          class="font-light block">
           {{ settings.fields.contactEmail }}
         </a>
       </div>
 
       <div class="col-span-12 md:col-span-3">
         <h3 class="uppercase font-medium">Social</h3>
-        <a
-          v-if="settings?.fields.instagramHandle"
-          :href="`https://instagram.com/${settings.fields.instagramHandle}`"
-          target="_blank"
-          rel="noopener"
-          class="font-light block"
-        >
+        <a v-if="settings?.fields.instagramHandle" :href="`https://instagram.com/${settings.fields.instagramHandle}`"
+          target="_blank" rel="noopener" class="font-light block">
           Instagram: {{ settings.fields.instagramHandle }}
         </a>
-        <p v-if="settings?.fields.linkedinName" class="font-light">
-          linkedin: {{ settings.fields.linkedinName }}
+        <a v-if="settings?.fields.linkedinName && settings?.fields.linkedinUrl" :href="settings.fields.linkedinUrl"
+          target="_blank" rel="noopener" class="font-light block">
+          Linkedin: {{ settings.fields.linkedinName }}
+        </a>
+        <p v-else-if="settings?.fields.linkedinName" class="font-light">
+          Linkedin: {{ settings.fields.linkedinName }}
         </p>
       </div>
 
