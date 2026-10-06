@@ -38,13 +38,7 @@ const settings = computed(() => settingsResult.value?.items?.[0])
 
           <section class="col-span-12 md:col-span-4 md:border-l border-black md:pl-2.5">
             <h2 class="uppercase font-medium mt-5">Works</h2>
-            <ol class="font-light">
-              <li v-for="(project, index) in projects?.items" :key="project.sys.id">
-                <NuxtLink :to="`/${project.fields.slug}`">
-                  {{ index + 1 }}. {{ project.fields.title }}
-                </NuxtLink>
-              </li>
-            </ol>
+            <ProjectList class="font-light" :projects="projects?.items" />
           </section>
         </div>
       </div>
