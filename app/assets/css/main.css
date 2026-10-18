@@ -8,3 +8,22 @@
 body {
   font-family: var(--font-sans);
 }
+
+@theme {
+  --font-sans: 'IBM Plex Sans', sans-serif;
+  --color-accent: #2b29c6;
+}
+
+@layer base {
+  a,
+  button {
+    transition-property: color, background-color, opacity;
+    transition-duration: 150ms;
+  }
+
+  @media (hover: hover) {
+    a:hover {
+      color: var(--color-accent);
+    }
+  }
+}

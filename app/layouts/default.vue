@@ -28,19 +28,49 @@ const listedIndex = computed(() =>
     : -1
 )
 
-// titolo dei progetti che non sono nella lista della home
-const { data: unlistedTitle } = await useAsyncData(
-  'current-project-title',
+// progetti non in home: titolo e, se sono figli di un collector, la sigla del genitore
+const { data: unlisted } = await useAsyncData(
+  'current-unlisted',
   async () => {
     if (!slug.value || listedIndex.value >= 0) return null
-    const res = await $contentful.getEntries({
-      content_type: 'project',
-      locale: contentfulLocale.value,
-      'fields.slug': slug.value,
-      include: 0,
-      limit: 1,
-    })
-    return (res.items[0]?.fields.title as string | undefined) ?? null
+
+    const [own, collectors] = await Promise.all([
+      $contentful.getEntries({
+        content_type: 'project',
+        locale: contentfulLocale.value,
+        'fields.slug': slug.value,
+        include: 0,
+        limit: 1,
+      }),
+      $contentful.getEntries({
+        content_type: 'project',
+        locale: contentfulLocale.value,
+        'fields.projectKind': 'collector',
+        include: 2,
+        limit: 20,
+      }),
+    ])
+
+    const title = own.items[0]?.fields.title as string | undefined
+    if (!title) return null
+
+    const parent: any = collectors.items.find((c: any) =>
+      ((c.fields.collectorEntries as any[]) ?? []).some(
+        (e) => e?.fields?.project?.fields?.slug === slug.value
+      )
+    )
+
+    if (!parent) return { title, parentLabel: null, parentNumber: null }
+
+    const parentIndex = (projects.value?.items ?? []).findIndex(
+      (p: any) => p.fields.slug === parent.fields.slug
+    )
+
+    return {
+      title,
+      parentLabel: (parent.fields.shortTitle || parent.fields.title) as string,
+      parentNumber: parentIndex >= 0 ? parentIndex + 1 : null,
+    }
   },
   { watch: [slug, contentfulLocale] }
 )
@@ -49,10 +79,22 @@ const current = computed(() => {
   if (!slug.value) return null
   if (listedIndex.value >= 0) {
     const p: any = projects.value!.items[listedIndex.value]
-    return { slug: slug.value, number: listedIndex.value + 1, title: p.fields.title as string }
+    return {
+      slug: slug.value,
+      number: listedIndex.value + 1,
+      title: p.fields.title as string,
+      parentLabel: null as string | null,
+      parentNumber: null as number | null,
+    }
   }
-  if (unlistedTitle.value) {
-    return { slug: slug.value, number: null, title: unlistedTitle.value }
+  if (unlisted.value) {
+    return {
+      slug: slug.value,
+      number: null,
+      title: unlisted.value.title,
+      parentLabel: unlisted.value.parentLabel,
+      parentNumber: unlisted.value.parentNumber,
+    }
   }
   return null
 })

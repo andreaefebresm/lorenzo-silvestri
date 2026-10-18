@@ -6,7 +6,7 @@ const props = defineProps<{
 const { locale } = useI18n()
 
 const MAX_IMAGES = 6
-const pill = 'bg-black text-white px-2.5 py-1 rounded-full text-sm uppercase transition-colors hover:bg-[#2b29c6]'
+const pill = 'bg-black text-white px-2.5 py-1 rounded-full text-sm uppercase transition-colors hover:bg-accent'
 
 const labels = computed(() =>
   locale.value === 'it'
@@ -15,7 +15,6 @@ const labels = computed(() =>
 )
 
 const own = computed(() => props.entry.fields ?? {})
-// se il progetto è in bozza o non risolto, fields non esiste
 const linked = computed(() => props.entry.fields?.project?.fields ?? {})
 
 const title = computed(() => own.value.title || linked.value.title)
@@ -44,6 +43,7 @@ const images = computed(() => {
     out.push(a)
   }
 
+  // l'hero (o la cover) è sempre la prima immagine
   add(linked.value.heroImage ?? linked.value.coverImage)
 
   const blocks = (linked.value.contentBlocks as any[] | undefined) ?? []
@@ -58,28 +58,29 @@ const images = computed(() => {
 
 <template>
   <div class="grid grid-cols-12 gap-2.5 mb-16">
-    <div class="col-span-12 md:col-span-7">
+    <div class="col-span-12 md:col-span-8">
       <RenderingCarousel v-if="images.length" :images="images" />
+      <h2 v-if="title" class="text-2xl md:text-4xl font-semibold mt-5">{{ title }}</h2>
+      <p v-if="tagline" class="text-[#BEBEBE] text-lg md:text-2xl font-semibold">
+        {{ tagline }}
+      </p>
     </div>
 
-    <div class="col-span-12 md:col-start-9 md:col-span-4 mt-5 md:mt-0">
-      <h2 v-if="title" class="text-2xl font-semibold">{{ title }}</h2>
-      <p v-if="tagline" class="text-lg font-semibold text-[#BEBEBE] mt-1">{{ tagline }}</p>
-
-      <div v-if="scope" class="mt-5">
+    <aside class="col-span-12 md:col-start-9 md:col-span-4 md:pl-5 mt-5 md:mt-0">
+      <div v-if="scope" class="mb-8">
         <h3 class="uppercase font-medium text-xl text-[#BEBEBE]">{{ labels.scope }}</h3>
         <p class="text-sm font-light">{{ scope }}</p>
       </div>
-      <div v-if="client" class="mt-5">
+      <div v-if="client" class="mb-8">
         <h3 class="uppercase font-medium text-xl text-[#BEBEBE]">{{ labels.client }}</h3>
         <p class="text-sm font-light">{{ client }}</p>
       </div>
-      <div v-if="year" class="mt-5">
+      <div v-if="year" class="mb-8">
         <h3 class="uppercase font-medium text-xl text-[#BEBEBE]">{{ labels.year }}</h3>
         <p class="text-sm font-light">{{ year }}</p>
       </div>
 
-      <div v-if="projectSlug || externalHref" class="flex flex-wrap gap-2.5 mt-5">
+      <div v-if="projectSlug || externalHref" class="flex flex-wrap gap-2.5">
         <NuxtLink v-if="projectSlug" :to="`/${projectSlug}`" :class="pill">
           {{ labels.project }}
         </NuxtLink>
@@ -87,6 +88,6 @@ const images = computed(() => {
           {{ labels.site }}
         </a>
       </div>
-    </div>
+    </aside>
   </div>
 </template>

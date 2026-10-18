@@ -2,7 +2,13 @@
 defineProps<{
   settings?: any
   projects?: any[]
-  current?: { slug: string; number: number | null; title: string } | null
+  current?: {
+    slug: string
+    number: number | null
+    title: string
+    parentLabel?: string | null
+    parentNumber?: number | null
+  } | null
 }>()
 
 const currentYear = new Date().getFullYear()
@@ -39,11 +45,7 @@ onBeforeUnmount(() => {
     <!-- MOBILE -->
     <div class="md:hidden h-14 px-5 flex items-center justify-between">
       <div class="flex items-center gap-2.5">
-        <button
-          :aria-expanded="menuOpen"
-          aria-label="Menu"
-          @click="menuOpen = !menuOpen"
-        >
+        <button :aria-expanded="menuOpen" aria-label="Menu" @click="menuOpen = !menuOpen">
           {{ menuOpen ? '✕' : '☰' }}
         </button>
         <NuxtLink to="/" class="flex items-center gap-2.5">
@@ -55,19 +57,12 @@ onBeforeUnmount(() => {
       <LocaleSwitch />
     </div>
 
-    <nav
-      v-if="menuOpen"
-      class="md:hidden absolute top-full left-0 w-full bg-white border-b border-black px-5 py-5 max-h-[calc(100vh-56px)] overflow-y-auto normal-case"
-    >
+    <nav v-if="menuOpen"
+      class="md:hidden absolute top-full left-0 w-full bg-white border-b border-black px-5 py-5 max-h-[calc(100vh-56px)] overflow-y-auto normal-case">
       <ProjectList :projects="projects" :current-slug="current?.slug" />
 
-      <a
-        v-if="settings?.fields.cvFile"
-        :href="(settings.fields.cvFile as any)?.fields?.file?.url"
-        target="_blank"
-        rel="noopener"
-        class="block mt-5 uppercase"
-      >
+      <a v-if="settings?.fields.cvFile" :href="(settings.fields.cvFile as any)?.fields?.file?.url" target="_blank"
+        rel="noopener" class="block mt-5 uppercase">
         Download CV
       </a>
     </nav>
@@ -82,45 +77,33 @@ onBeforeUnmount(() => {
 
         <span class="col-span-1">{{ currentYear }}</span>
 
-        <div
-          v-if="current"
-          class="col-start-6 col-span-4 self-stretch relative flex items-center"
-          @mouseenter="openDropdown"
-          @mouseleave="scheduleClose"
-          @focusin="openDropdown"
-          @focusout="scheduleClose"
-          @keydown.esc="dropdownOpen = false"
-        >
-          <button
-            type="button"
-            class="uppercase"
-            aria-haspopup="true"
-            :aria-expanded="dropdownOpen"
-            @click="dropdownOpen = !dropdownOpen"
-          >
+        <div v-if="current" class="col-start-6 col-span-4 self-stretch relative flex items-center"
+          @mouseenter="openDropdown" @mouseleave="scheduleClose" @focusin="openDropdown" @focusout="scheduleClose"
+          @keydown.esc="dropdownOpen = false">
+          <button type="button" class="uppercase transition-colors hover:text-accent" aria-haspopup="true" :aria-expanded="dropdownOpen"
+            @click="dropdownOpen = !dropdownOpen">
             <span>
               Works •
-              <template v-if="current.number">{{ current.number }}.</template>
-              {{ current.title }}
+              <template v-if="current.parentLabel">
+                <template v-if="current.parentNumber">{{ current.parentNumber }}.</template>
+                {{ current.parentLabel }} · {{ current.title }}
+              </template>
+              <template v-else>
+                <template v-if="current.number">{{ current.number }}.</template>
+                {{ current.title }}
+              </template>
             </span>
             <span aria-hidden="true" class="ml-1">▾</span>
           </button>
 
-          <div
-            v-if="dropdownOpen"
-            class="absolute top-full left-0 min-w-[16rem] max-h-[calc(100vh-56px)] overflow-y-auto bg-white border-t-0 px-5 py-5 normal-case"
-          >
+          <div v-if="dropdownOpen"
+            class="absolute top-full left-0 min-w-[16rem] max-h-[calc(100vh-56px)] overflow-y-auto bg-white border-t-0 px-5 py-5 normal-case">
             <ProjectList :projects="projects" :current-slug="current.slug" />
           </div>
         </div>
 
-        <a
-          v-if="settings?.fields.cvFile"
-          :href="(settings.fields.cvFile as any)?.fields?.file?.url"
-          target="_blank"
-          rel="noopener"
-          class="col-start-10 col-span-2 text-left"
-        >
+        <a v-if="settings?.fields.cvFile" :href="(settings.fields.cvFile as any)?.fields?.file?.url" target="_blank"
+          rel="noopener" class="col-start-10 col-span-2 text-left">
           Download CV
         </a>
 

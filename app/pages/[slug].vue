@@ -50,9 +50,6 @@ const hasImages = computed(() => {
         <p v-if="project.fields.tagline" class="text-[#BEBEBE] text-lg md:text-2xl font-semibold">
           {{ project.fields.tagline }}
         </p>
-        <p v-if="project.fields.tagline" class="text-[#BEBEBE] text-lg md:text-2xl font-semibold">
-          {{ project.fields.tagline }}
-        </p>
         <p v-if="project.fields.confidentialityNote" class="text-sm md:text-base font-medium mt-2">
           {{ project.fields.confidentialityNote }}
         </p>
@@ -132,7 +129,8 @@ const hasImages = computed(() => {
         </section>
 
         <CollectorGrid v-if="(project.fields.collectorEntries as any[])?.length"
-          :entries="project.fields.collectorEntries as any[]" />
+          :entries="project.fields.collectorEntries as any[]"
+          :title="project.fields.collectorTitle as string | undefined" />
       </template>
 
       <!-- VARIANTE gallery -->

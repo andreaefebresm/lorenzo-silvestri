@@ -6,10 +6,8 @@ const otherLocale = computed(() => (locale.value === 'en' ? 'it' : 'en'))
 </script>
 
 <template>
-  <NuxtLink
-    :to="switchLocalePath(otherLocale)"
-    class="bg-black text-white px-2.5 py-1 rounded-full text-center"
-  >
+  <NuxtLink :to="switchLocalePath(otherLocale)"
+    class="bg-black text-white px-2.5 py-1 rounded-full text-center transition-colors hover:bg-accent">
     <span :class="locale === 'en' ? 'opacity-100' : 'opacity-50'">
       {{ locale === 'en' ? 'ENG' : 'ITA' }}
     </span>

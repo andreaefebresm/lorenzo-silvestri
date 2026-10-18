@@ -5,7 +5,7 @@ const { contentfulLocale } = useContentfulLocale()
 const { data: projects } = await useProjectsList()
 
 const { data: settingsResult } = await useAsyncData(
-  'site-settings',
+  'site-settings-footer',
   () => $contentful.getEntries({
     content_type: 'siteSettings',
     locale: contentfulLocale.value,
@@ -19,33 +19,42 @@ const settings = computed(() => settingsResult.value?.items?.[0])
 
 <template>
   <main>
-    <PageGrid>
-      <div class="col-span-12 flex flex-col md:justify-end min-h-0 md:min-h-[calc(100vh-80px)]">
-        <div class="grid grid-cols-12">
-          <div class="col-span-12 border-t border-black"></div>
+    <PageGrid class="pt-5">
+      <aside
+        id="about"
+        class="col-span-12 md:col-span-4 md:sticky md:top-20 md:self-start md:max-h-[calc(100vh-6rem)] md:overflow-y-auto text-sm mb-10"
+      >
+        <section class="mb-10">
+          <h2 class="uppercase font-medium mb-2.5">About</h2>
+          <ContentfulRichText
+            v-if="settings?.fields.aboutText"
+            :document="settings.fields.aboutText as any"
+            size="sm"
+          />
+        </section>
 
-          <section id="about" class="col-span-12 md:col-span-5 md:pr-2.5">
-            <h2 class="uppercase font-medium mt-5">About</h2>
-            <ContentfulRichText v-if="settings?.fields.aboutText" :document="settings.fields.aboutText as any" />
-          </section>
+        <section class="mb-10">
+          <h2 class="uppercase font-medium mb-2.5">Contacts</h2>
+          <a
+            v-if="settings?.fields.contactEmail"
+            :href="`mailto:${settings.fields.contactEmail}`"
+            class="font-light"
+          >
+            {{ settings.fields.contactEmail }}
+          </a>
+        </section>
 
-          <section class="col-span-12 md:col-span-3 md:border-l border-black md:px-2.5">
-            <h2 class="uppercase font-medium mt-5">Contacts</h2>
-            <a v-if="settings?.fields.contactEmail" :href="`mailto:${settings.fields.contactEmail}`" class="font-light">
-              {{ settings?.fields.contactEmail }}
-            </a>
-          </section>
+        <section class="mb-10 md:mb-0">
+          <h2 class="uppercase font-medium mb-2.5">Works</h2>
+          <ProjectList class="font-light" :projects="projects?.items" />
+        </section>
+      </aside>
 
-          <section class="col-span-12 md:col-span-4 md:border-l border-black md:pl-2.5">
-            <h2 class="uppercase font-medium mt-5">Works</h2>
-            <ProjectList class="font-light" :projects="projects?.items" />
-          </section>
-        </div>
-      </div>
-
-      <ul class="col-span-10 col-start-2 grid grid-cols-12 gap-2.5 list-none p-0 my-10 ">
-        <li v-for="project in projects?.items" :key="project.sys.id" class="col-span-12 md:col-span-6">
-          <ProjectCard :project="project" :columns="6" />
+      <ul
+        class="col-span-12 md:col-start-6 md:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-2.5 gap-y-10 list-none p-0 mb-10"
+      >
+        <li v-for="project in projects?.items" :key="project.sys.id">
+          <ProjectCard :project="project" :columns="0" />
         </li>
       </ul>
     </PageGrid>
