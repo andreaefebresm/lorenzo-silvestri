@@ -10,7 +10,7 @@ const { data: result } = await useAsyncData(
     locale: contentfulLocale.value,
     'fields.slug': route.params.slug as string,
     limit: 1,
-    include: 3,
+    include: 4,
   }),
   { watch: [contentfulLocale] }
 )
@@ -22,28 +22,44 @@ if (!project.value) {
 }
 
 const kind = computed(() => project.value?.fields.projectKind || 'standard')
+
+const hasImages = computed(() => {
+  const p = project.value?.fields
+  if (!p) return false
+  const blocks = (p.contentBlocks as any[]) ?? []
+  return (
+    blocks.some((b) => (b?.fields?.images as any[])?.length) ||
+    ((p.gallery as any[])?.length ?? 0) > 0 ||
+    ((p.galleryItems as any[])?.length ?? 0) > 0 ||
+    ((p.collectorEntries as any[])?.length ?? 0) > 0
+  )
+})
 </script>
 
 <template>
   <main v-if="project" class="mb-16">
     <PageGrid>
       <!-- SLOT 1: cover + titolo + cartiglio -->
-      <div class="col-span-12 md:col-span-8 flex flex-col md:h-[calc(100vh-56px)]">
-        <NuxtImg
-          v-if="project.fields.heroImage ?? project.fields.coverImage"
+      <div class="col-span-12 md:col-span-8 flex flex-col md:h-[calc(100vh-56px)]"
+        :class="hasImages ? '' : 'md:sticky md:top-14 md:self-start'">
+        <NuxtImg v-if="project.fields.heroImage ?? project.fields.coverImage"
           :src="`https:${((project.fields.heroImage ?? project.fields.coverImage) as any)?.fields?.file?.url}`"
-          :alt="project.fields.title as string"
-          provider="contentful"
-          width="1400"
-          class="flex-1 md:min-h-0 w-full object-cover aspect-[4/5] md:aspect-auto"
-        />
+          :alt="project.fields.title as string" provider="contentful" width="1400"
+          class="flex-1 md:min-h-0 w-full object-cover aspect-[4/5] md:aspect-auto" />
         <h1 class="text-2xl md:text-4xl font-semibold mt-5">{{ project.fields.title }}</h1>
         <p v-if="project.fields.tagline" class="text-[#BEBEBE] text-lg md:text-2xl font-semibold">
           {{ project.fields.tagline }}
         </p>
+        <p v-if="project.fields.tagline" class="text-[#BEBEBE] text-lg md:text-2xl font-semibold">
+          {{ project.fields.tagline }}
+        </p>
+        <p v-if="project.fields.confidentialityNote" class="text-sm md:text-base font-medium mt-2">
+          {{ project.fields.confidentialityNote }}
+        </p>
+
       </div>
 
-      <aside class="col-span-12 md:col-start-9 md:col-span-4 md:pl-5 mt-5 md:mt-0 md:h-[calc(100vh-56px)]">
+      <aside class="col-span-12 md:col-start-9 md:col-span-4 md:pl-5 mt-5 md:mt-0 md:min-h-[calc(100vh-56px)]">
         <div v-if="project.fields.scope" class="mb-8">
           <h3 class="uppercase font-medium text-xl text-[#BEBEBE]">Scope</h3>
           <p class="text-sm font-light">{{ project.fields.scope }}</p>
@@ -64,39 +80,33 @@ const kind = computed(() => project.value?.fields.projectKind || 'standard')
           <h3 class="uppercase font-medium text-xl text-[#BEBEBE]">Featured</h3>
           <ContentfulRichText :document="project.fields.featured as any" size="sm" />
         </div>
+
+        <!-- NUOVO: solo per la variante collector -->
+        <div v-if="kind === 'collector' && project.fields.role" class="mt-16">
+          <h3 class="uppercase font-medium text-xl text-[#BEBEBE]">About the project</h3>
+          <ContentfulRichText :document="project.fields.role as any" size="sm" />
+        </div>
       </aside>
 
       <!-- VARIANTE standard -->
       <template v-if="kind === 'standard'">
-        <section
-          v-if="project.fields.bodyText"
-          class="col-span-12 md:col-start-3 md:col-span-8 mt-16 text-xl md:text-2xl text-center"
-        >
+        <section v-if="project.fields.bodyText"
+          class="col-span-12 md:col-start-3 md:col-span-8 mt-16 text-xl md:text-2xl text-center">
           <ContentfulRichText :document="project.fields.bodyText as any" />
         </section>
 
         <div class="col-span-12 mt-16">
           <template v-if="(project.fields.contentBlocks as any[])?.length">
-            <ProjectContentBlock
-              v-for="block in (project.fields.contentBlocks as any[])"
-              :key="block.sys.id"
-              :block="block"
-            />
+            <ProjectContentBlock v-for="block in (project.fields.contentBlocks as any[])" :key="block.sys.id"
+              :block="block" />
           </template>
 
           <!-- fallback per progetti non ancora migrati a contentBlocks -->
           <div v-else class="grid grid-cols-12 gap-2.5">
             <div class="col-span-12 md:col-span-8">
-              <NuxtImg
-                v-for="(img, i) in (project.fields.gallery as any[])"
-                :key="i"
-                :src="`https:${img.fields.file.url}`"
-                :alt="`${project.fields.title} image ${(i as number) + 1}`"
-                provider="contentful"
-                width="1400"
-                class="w-full object-cover mb-2.5"
-                loading="lazy"
-              />
+              <NuxtImg v-for="(img, i) in (project.fields.gallery as any[])" :key="i"
+                :src="`https:${img.fields.file.url}`" :alt="`${project.fields.title} image ${(i as number) + 1}`"
+                provider="contentful" width="1400" class="w-full object-cover mb-2.5" loading="lazy" />
             </div>
             <aside class="col-span-12 md:col-span-4 md:pl-5 mt-5 md:mt-0">
               <div class="md:sticky md:top-20">
@@ -109,55 +119,38 @@ const kind = computed(() => project.value?.fields.projectKind || 'standard')
           </div>
         </div>
 
-        <section
-          v-if="project.fields.deepDive"
-          class="col-span-12 md:col-span-8 mt-16"
-        >
+        <section v-if="project.fields.deepDive" class="col-span-12 md:col-span-8 mt-16">
           <ContentfulRichText :document="project.fields.deepDive as any" />
         </section>
       </template>
 
       <!-- VARIANTE collector -->
       <template v-else-if="kind === 'collector'">
-        <section
-          v-if="project.fields.bodyText"
-          class="col-span-12 md:col-start-4 md:col-span-6 mt-16 text-lg md:text-2xl text-center"
-        >
+        <section v-if="project.fields.bodyText"
+          class="col-span-12 md:col-start-4 md:col-span-6 mt-16 text-lg md:text-2xl text-center">
           <ContentfulRichText :document="project.fields.bodyText as any" />
         </section>
 
-        <CollectorGrid
-          v-if="(project.fields.collectorEntries as any[])?.length"
-          :entries="project.fields.collectorEntries as any[]"
-        />
+        <CollectorGrid v-if="(project.fields.collectorEntries as any[])?.length"
+          :entries="project.fields.collectorEntries as any[]" />
       </template>
 
       <!-- VARIANTE gallery -->
       <template v-else-if="kind === 'gallery'">
-        <section
-          v-if="project.fields.bodyText"
-          class="col-span-12 md:col-start-4 md:col-span-6 mt-16 text-lg md:text-2xl text-center"
-        >
+        <section v-if="project.fields.bodyText"
+          class="col-span-12 md:col-start-4 md:col-span-6 mt-16 text-lg md:text-2xl text-center">
           <ContentfulRichText :document="project.fields.bodyText as any" />
         </section>
 
-        <GallerySection
-          v-if="(project.fields.galleryItems as any[])?.length"
-          :items="project.fields.galleryItems as any[]"
-        />
+        <GallerySection v-if="(project.fields.galleryItems as any[])?.length"
+          :items="project.fields.galleryItems as any[]" />
       </template>
 
       <!-- SLOT 7: altri progetti -->
-      <section
-        v-if="(project.fields.relatedProjects as any[])?.length"
-        class="col-span-12 mt-16 border-t border-black pt-5"
-      >
-        <NuxtLink
-          v-for="rel in (project.fields.relatedProjects as any[])"
-          :key="rel.sys.id"
-          :to="`/${rel.fields.slug}`"
-          class="mr-5 block md:inline"
-        >
+      <section v-if="(project.fields.relatedProjects as any[])?.length"
+        class="col-span-12 mt-16 border-t border-black pt-5">
+        <NuxtLink v-for="rel in (project.fields.relatedProjects as any[])" :key="rel.sys.id" :to="`/${rel.fields.slug}`"
+          class="mr-5 block md:inline">
           {{ rel.fields.title }}
         </NuxtLink>
       </section>

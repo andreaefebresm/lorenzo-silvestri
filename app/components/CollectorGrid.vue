@@ -6,19 +6,10 @@ defineProps<{
 
 <template>
   <section class="col-span-12 mt-16">
-    <div class="grid grid-cols-12 gap-2.5">
-      <ProjectCard
-        v-for="entry in entries.filter((e) => e.fields.project)"
-        :key="entry.sys.id"
-        :project="entry.fields.project"
-        :columns="4"
-      />
-      <ExternalCard
-        v-for="entry in entries.filter((e) => !e.fields.project)"
-        :key="entry.sys.id"
-        :entry="entry"
-        :columns="4"
-      />
-    </div>
+    <CollectorBlock
+      v-for="entry in entries.filter((e) => e?.fields)"
+      :key="entry.sys.id"
+      :entry="entry"
+    />
   </section>
 </template>
