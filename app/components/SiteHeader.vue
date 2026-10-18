@@ -12,6 +12,7 @@ defineProps<{
 }>()
 
 const currentYear = new Date().getFullYear()
+const localePath = useLocalePath()
 const menuOpen = ref(false)
 const dropdownOpen = ref(false)
 
@@ -48,7 +49,7 @@ onBeforeUnmount(() => {
         <button :aria-expanded="menuOpen" aria-label="Menu" @click="menuOpen = !menuOpen">
           {{ menuOpen ? '✕' : '☰' }}
         </button>
-        <NuxtLink to="/" class="flex items-center gap-2.5">
+        <NuxtLink :to="localePath('/')" class="flex items-center gap-2.5">
           <img src="/logo.svg" alt="" class="h-[1em] w-auto" />
           LORENZO SILVESTRI
         </NuxtLink>
@@ -70,7 +71,7 @@ onBeforeUnmount(() => {
     <!-- DESKTOP -->
     <div class="hidden md:block">
       <PageGrid class="h-14 items-center">
-        <NuxtLink to="/" class="col-span-3 flex items-center gap-2.5">
+        <NuxtLink :to="localePath('/')" class="col-span-3 flex items-center gap-2.5">
           <img src="/logo.svg" alt="" class="h-[1em] w-auto" />
           LORENZO SILVESTRI
         </NuxtLink>

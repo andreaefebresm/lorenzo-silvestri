@@ -22,6 +22,7 @@ if (!project.value) {
 }
 
 const kind = computed(() => project.value?.fields.projectKind || 'standard')
+const localePath = useLocalePath()
 
 const hasImages = computed(() => {
   const p = project.value?.fields
@@ -147,8 +148,8 @@ const hasImages = computed(() => {
       <!-- SLOT 7: altri progetti -->
       <section v-if="(project.fields.relatedProjects as any[])?.length"
         class="col-span-12 mt-16 border-t border-black pt-5">
-        <NuxtLink v-for="rel in (project.fields.relatedProjects as any[])" :key="rel.sys.id" :to="`/${rel.fields.slug}`"
-          class="mr-5 block md:inline">
+        <NuxtLink v-for="rel in (project.fields.relatedProjects as any[])" :key="rel.sys.id"
+          :to="localePath(`/${rel.fields.slug}`)" class="mr-5 block md:inline">
           {{ rel.fields.title }}
         </NuxtLink>
       </section>

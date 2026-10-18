@@ -4,21 +4,23 @@ const props = defineProps<{
   columns?: number
 }>()
 
+const localePath = useLocalePath()
+
 const colClass = computed(() => {
   const map: Record<number, string> = {
-  0: '',
-  3: 'col-span-12 md:col-span-3',
-  4: 'col-span-12 md:col-span-4',
-  6: 'col-span-12 md:col-span-6',
-  12: 'col-span-12',
-}
+    0: '',
+    3: 'col-span-12 md:col-span-3',
+    4: 'col-span-12 md:col-span-4',
+    6: 'col-span-12 md:col-span-6',
+    12: 'col-span-12',
+  }
   return map[props.columns ?? 6] ?? 'col-span-12 md:col-span-6'
 })
 </script>
 
 <template>
   <div :class="colClass">
-    <NuxtLink :to="`/${project.fields.slug}`" class="group block hover:opacity-80 transition-opacity">
+    <NuxtLink :to="localePath(`/${project.fields.slug}`)" class="group block">
       <NuxtImg
         v-if="project.fields.coverImage"
         :src="`https:${(project.fields.coverImage as any)?.fields?.file?.url}`"

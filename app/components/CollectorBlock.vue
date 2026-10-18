@@ -4,6 +4,7 @@ const props = defineProps<{
 }>()
 
 const { locale } = useI18n()
+const localePath = useLocalePath()
 
 const MAX_IMAGES = 6
 const pill = 'bg-black text-white px-2.5 py-1 rounded-full text-sm uppercase transition-colors hover:bg-accent'
@@ -81,7 +82,7 @@ const images = computed(() => {
       </div>
 
       <div v-if="projectSlug || externalHref" class="flex flex-wrap gap-2.5">
-        <NuxtLink v-if="projectSlug" :to="`/${projectSlug}`" :class="pill">
+        <NuxtLink v-if="projectSlug" :to="localePath(`/${projectSlug}`)" :class="pill">
           {{ labels.project }}
         </NuxtLink>
         <a v-if="externalHref" :href="externalHref" target="_blank" rel="noopener" :class="pill">
